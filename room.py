@@ -28,7 +28,6 @@ class Room:
     def create_door(self, door_coordonate, wall_index, map):
         self.doors_coordonates.append(door_coordonate)
         map[door_coordonate[0], door_coordonate[1]] = 2
-        self.coordonates[wall_index].remove(door_coordonate)
 
     def delete_isolated(self, map):
         if len(self.doors_coordonates) == 0:
@@ -70,6 +69,9 @@ def get_neighbors(map, cell):
     x, y = cell
     neighbors = []
     # Check if the cell above is a valid move
+    if y == 20:
+        y -= 1
+
     if x > 0 and (map[x - 1][y] == 0 or map[x - 1][y] == 2):
         neighbors.append((x - 1, y))
     # Check if the cell to the right is a valid move
@@ -99,7 +101,7 @@ def construct_path(previous, current):
 
 def starting_path_position(room):
     wall_index = randint(0, 3)
-    door_coordonate = choice(room.coordonates[wall_index])
+    door_coordonate = choice(room.coordonates[wall_index][1:-2])
     if wall_index == 0:
         starting_pos = (door_coordonate[0] - 1, door_coordonate[1])
         return door_coordonate, starting_pos, wall_index
@@ -128,15 +130,17 @@ def create_paths(room_1, room_2, map):
         path = find_shortest_path(map, first_starting_pos, second_starting_pos)
         if path is not None:
             path_list.append(
-                path, first_door_pos, second_door_pos, wall_1_index, wall_2_index
+                (path, first_door_pos, second_door_pos, wall_1_index, wall_2_index)
             )
 
     # On trouve le chemin le plus petit et on en fait un couloir
     path, first_door_pos, second_door_pos, wall_1_index, wall_2_index = min(
-        [(path, len(path[0])) for path in path_list], axes=1
-    )[0]
+        path_list, key=lambda path: len(path[0])
+    )
+
+    path = path[1:]
     for coord in path:
-        map[coord[0], coord[1]] = 3
+        map[coord[0]][coord[1]] = 3
         room_1.create_door(first_door_pos, wall_1_index, map)
         room_2.create_door(second_door_pos, wall_2_index, map)
 
@@ -146,9 +150,8 @@ def generate_all_paths(map, total_room_list):
     # generation des chemins pour passer d'une room à une autre
     for i, r1 in enumerate(total_room_list):
         for j, r2 in enumerate(total_room_list):
-            if j >= i:
-                continue
-            create_paths(r1, r2, map)
+            if j < i:
+                create_paths(r1, r2, map)
 
     # recherche et effacement des rooms isolées
     for r in total_room_list:
