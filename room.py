@@ -35,6 +35,10 @@ class Room:
                     map[coords[0], coords[1]] = 0
         Room.total_room_list.remove(self)
 
+    def coin(self) :
+        x,y = self.pos
+        return[self.pos, (x+self.x_length-1, y), (x, y+self.y_length-1), (x+self.x_length-1, y+self.y_length-1)]
+
 
 def find_shortest_path(map, start, end):
     # Initialize a queue to store the next cells to visit
