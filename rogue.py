@@ -6,6 +6,20 @@ import random as rd
 
 
 class Game : 
+    def __init__(self, height = 20, width = 20, pix = 10, colors = ['#000000', '#ffffff', '#ff0000', '#00ff00', '#0000ff', '#a0b0c0']) :
+        self.h = height
+        self.w = width
+        self.pix = pix
+        self.screen = pg.display.set_mode((self.h*self.pix, self.w*self.pix))
+        self.colors = colors
+
+    def draw(self, map) :
+        n,p = map.shape
+        for i in range(n) :
+            for j in range(p) :
+                rect = pg.Rect(self.pix*i, self.pix*j, self.pix, self.pix)
+                pg.draw.rect(self.screen, self.colors[map[i,j]], rect)
+
 
     def get_arrow(self, heros):
 
