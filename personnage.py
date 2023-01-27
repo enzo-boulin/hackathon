@@ -1,4 +1,5 @@
 import random as rd
+import pygame as pg
 
 
 class Personnage:
@@ -26,10 +27,11 @@ class Heros(Personnage):
         esquive,
         vitesse,
         position,
+        direction,
         argent,
         potions,
     ):
-        super().__init__(self, PV, force, defense, esquive, vitesse, position)
+        super().__init__(PV, force, defense, esquive, vitesse, position, direction)
         self.argent = argent
         self.potions = potions
 
@@ -62,26 +64,39 @@ def esquive(personnage):
 def attaque(attaquant, defenseur):
     if not (esquive(defenseur)):
         defenseur.PV -= max(attaquant.force - defenseur.defense, 0)
+    return max(attaquant.force - defenseur.defense, 0)
 
 
 def combat(heros, monstre):
+    pg.init()
+    print("Le combat commence")
     if heros.vitesse >= monstre.vitesse:
         if not (esquive(monstre)):
-            attaque(heros, monstre)
+            degat = attaque(heros, monstre)
+            print(f"Vous avez infligé {degat} degat(s)")
             if monstre.PV <= 0:
                 heros.PV += 5
                 heros.force += 1
-                return "Monstre battu"
-            attaque(monstre, heros)
+                print("Monstre battu")
+                return None
+        if not (esquive(heros)):
+            degat = attaque(monstre, heros)
+            print(f"Le monstre a infligé {degat} degat(s)")
             if heros.PV <= 0:
-                return "Game over"
+                print("Game over")
+                return None
     else:
         if not (esquive(heros)):
-            attaque(monstre, heros)
+            degat = attaque(monstre, heros)
+            print(f"Vous avez infligé {degat} degat(s)")
             if heros.PV <= 0:
-                return "Game over"
-            attaque(heros, monstre)
-            if heros.PV <= 0:
+                print("Game over")
+                return None
+        if not (esquive(monstre)):
+            degat = attaque(heros, monstre)
+            print(f"Vous avez infligé {degat} degat(s)")
+            if monstre.PV <= 0:
                 heros.PV += 5
                 heros.force += 1
-                return "Monstre battu"
+                print("Monstre battu")
+                return None
