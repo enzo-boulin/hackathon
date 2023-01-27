@@ -47,13 +47,13 @@ class screen :
       h,w = size
       for i,j in self.room_pos :
          I,J = self.room_pos[(i,j)]
-         if (x+h>i and x+h<I) and (y+w>j and y+w<J) :
+         if (x+h>i-3 and x+h<I+3) and (y+w>j-3 and y+w<J+3) :
             return True
-         if (x>i and x<I) and (y>j and y<J) :
+         if (x>i-3 and x<I+3) and (y>j-3 and y<J+3) :
             return True
-         if (x>i and x<I) and (y+w>j and y+w<J) :
+         if (x>i-3 and x<I+3) and (y+w>j-3 and y+w<J+3) :
             return True
-         if (x+h>i and x+h<I) and (y>j and y<J) :
+         if (x+h>i-3 and x+h<I+3) and (y>j-3 and y<J+3) :
             return True
       return False
 
@@ -70,6 +70,7 @@ class screen :
          mur3 = [(i+h-1,j+k+1) for k in range(w-1)]
          mur4 = [(i+k+1, j+w-1) for k in range(h-1)]
          mur = mur1+mur2+mur3+mur4
+         print(mur)
          for pos in mur :
             self.map[pos] = 1
 
