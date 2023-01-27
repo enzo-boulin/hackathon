@@ -34,18 +34,7 @@ class Room:
         Room.total_room_list.remove(self)
 
     
-    def generate_all_paths(map):
-        """Génère tous les chemins de toutes les rooms. les rooms isolées sont supprimées"""
-        #generation des chemins pour passer d'une room à une autre
-        for i, r1 in enumerate(Room.total_room_list):
-            for j, r2 in enumerate(Room.total_room_list):
-                if j>=i:
-                    continue
-                create_paths(r1, r2, map)
-        
-        #recherche et effacement des rooms isolées
-        for r in Room.total_room_list:
-            r.delete_isolated(map)
+
         
 
 
@@ -143,3 +132,104 @@ def create_paths(room_1, room_2, map):
         room_1.create_door(first_door_pos, wall_1_index, map)
         room_2.create_door(second_door_pos, wall_2_index, map)
 
+def generate_all_paths(map, total_room_list):
+    """Génère tous les chemins de toutes les rooms. les rooms isolées sont supprimées"""
+    #generation des chemins pour passer d'une room à une autre
+    for i, r1 in enumerate(total_room_list):
+        for j, r2 in enumerate(total_room_list):
+            if j>=i:
+                continue
+            create_paths(r1, r2, map)
+        
+    #recherche et effacement des rooms isolées
+    for r in total_room_list:
+        r.delete_isolated(map)
+
+
+
+
+
+
+import numpy as np
+
+class Screen :
+    def __init__(self, height = 20, width = 20) :
+        self.height = height
+        self.width = width
+        self.map = np.zeros((self.height, self.width), dtype='uint8')
+        room_number = np.random.randint(2,4, dtype='uint8')
+        #position du coin en haut à gauche en clé et bas droite attribu
+        self.room_pos = {}
+        c=0
+        while len(self.room_pos)<room_number and c < 100000:
+            c+=1
+            #position du coin en haut à gauche de la room
+            x,y = np.random.randint(0, self.height, dtype='uint8'),np.random.randint(0, self.width, dtype='uint8')
+            h,w = np.random.randint(self.height//5, self.height//2, dtype='uint8'),np.random.randint(self.width//5, self.width//2, dtype='uint8')
+            if x+h <= self.height and y+w <= self.width :
+                if len(self.room_pos) == 0 :
+                    self.room_pos[(x,y)] = x+h,y+w
+                    Room(h, w, (x, y), self.map)
+
+                if not self.conflict((x,y), (h,w)) :
+                    self.room_pos[(x,y)] = x+h,y+w
+                    Room(h, w, (x, y), self.map)
+        self.room_number = len(self.room_pos)
+
+
+    def no_conflict1(self, pos, size) : #inutile
+        x,y = pos
+        h,w = size
+        up = 0
+        for i,j in self.room_pos :
+            I,J = self.room_pos[(i,j)]
+            if x+h<i or y+w<j :
+                return True
+            if x > I or y > J :
+                return True 
+
+        up = np.array([x+h<i or y+w<j for i,j in self.room_pos ])
+        up1 = up.all
+        down = np.array([x > self.room_pos[(i,j)][0] or y > self.room_pos[(i,j)][0] for i,j in self.room_pos])
+        down1 = down.all
+        if down1 or up1 :
+            return True
+        return False
+   
+    def conflict(self, pos, size) :
+        x,y = pos
+        h,w = size
+        for i,j in self.room_pos :
+            I,J = self.room_pos[(i,j)]
+            if (x+h>i and x+h<I) and (y+w>j and y+w<J) :
+                return True
+            if (x>i and x<I) and (y>j and y<J) :
+                return True
+            if (x>i and x<I) and (y+w>j and y+w<J) :
+                return True
+            if (x+h>i and x+h<I) and (y>j and y<J) :
+                return True
+        return False
+
+
+               
+
+
+    def draw_room(self) :
+        for i,j in self.room_pos :
+            h,w = self.room_pos[(i,j)][0]-i, self.room_pos[(i,j)][1]-j
+            print(self.room_pos)
+            mur1 = [(i+k,j) for k in range(h)]
+            mur2 = [(i,j+k) for k in range(w)]
+            mur3 = [(i+h-1,j+k+1) for k in range(w-1)]
+            mur4 = [(i+k+1, j+w-1) for k in range(h-1)]
+            mur = mur1+mur2+mur3+mur4
+            for pos in mur :
+                self.map[pos] = 1
+        generate_all_paths(self.map, Room.total_room_list)
+
+         
+
+a = Screen()
+a.draw_room()
+print(a.map)
