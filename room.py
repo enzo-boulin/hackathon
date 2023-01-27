@@ -20,8 +20,7 @@ class Room:
             self.right_wall,
             self.down_wall,
         ]
-        for coordonate in self.coordonates:
-            map[coordonate[0], coordonate[1]] = 1
+        print(self.coordonates)
         self.doors_coordonates = []
         Room.total_room_list.append(self)
 
@@ -69,8 +68,10 @@ def get_neighbors(map, cell):
     x, y = cell
     neighbors = []
     # Check if the cell above is a valid move
-    if y == 20:
-        y -= 1
+    if y >= 19:
+        y = 18
+    if x >= 19:
+        x = 18
 
     if x > 0 and (map[x - 1][y] == 0 or map[x - 1][y] == 2):
         neighbors.append((x - 1, y))
@@ -124,10 +125,9 @@ def create_paths(room_1, room_2, map):
         first_door_pos, first_starting_pos, wall_1_index = starting_path_position(
             room_1
         )
-        second_door_pos, second_starting_pos, wall_2_index = starting_path_position(
-            room_2
-        )
-        path = find_shortest_path(map, first_starting_pos, second_starting_pos)
+        wall_2_index = randint(0, 3)
+        second_door_pos = choice(room_2.coordonates[wall_2_index])
+        path = find_shortest_path(map, first_starting_pos, second_door_pos)
         if path is not None:
             path_list.append(
                 (path, first_door_pos, second_door_pos, wall_1_index, wall_2_index)
@@ -240,8 +240,3 @@ class Screen:
             for pos in mur:
                 self.map[pos] = 1
         generate_all_paths(self.map, Room.total_room_list)
-
-
-a = Screen()
-a.draw_room()
-print(a.map)
