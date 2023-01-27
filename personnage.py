@@ -2,16 +2,17 @@ import random as rd
 
 
 class Personnage:
-    def __init__(self, PV, force, defense, esquive, vitesse, position):
+    def __init__(self, PV, force, defense, esquive, vitesse, position, direction):
         self.PV = PV
         self.force = force
         self.defense = defense
         self.esquive = esquive
         self.vitesse = vitesse
         self.position = position
+        self.direction = direction
 
-    def mouvement(self, direction):
-        self.position += direction
+    def mouvement(self):
+        self.position += self.direction
 
 
 class Heros(Personnage):
@@ -47,11 +48,6 @@ class Heros(Personnage):
         if attribut == "vitesse":
             valeur = self.vitesse
             self.vitesse += rd.randint(-int(valeur / 2), int(valeur / 2))
-
-
-class Monstre(Personnage):
-    def __init__(self, PV, force, defense, esquive, vitesse, position):
-        super().__init__(PV, force, defense, esquive, vitesse, position)
 
 
 def esquive(personnage):
