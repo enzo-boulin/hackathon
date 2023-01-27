@@ -64,13 +64,11 @@ class screen :
    def draw_room(self) :
       for i,j in self.room_pos :
          h,w = self.room_pos[(i,j)][0]-i, self.room_pos[(i,j)][1]-j
-         print(self.room_pos)
          mur1 = [(i+k,j) for k in range(h)]
          mur2 = [(i,j+k) for k in range(w)]
          mur3 = [(i+h-1,j+k+1) for k in range(w-1)]
          mur4 = [(i+k+1, j+w-1) for k in range(h-1)]
          mur = mur1+mur2+mur3+mur4
-         print(mur)
          for pos in mur :
             self.map[pos] = 1
 
