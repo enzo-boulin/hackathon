@@ -21,6 +21,7 @@ class screen :
             if not self.conflict((x,y), (h,w)) :
                self.room_pos[(x,y)] = x+h,y+w
       self.room_number = len(self.room_pos)
+      self.draw_room()
 
 
    def no_conflict1(self, pos, size) : #inutile
@@ -75,8 +76,12 @@ class screen :
          
 
 a = screen()
-a.draw_room()
 print(a.map)
+import matplotlib.pyplot as plt
+plt.imshow(a.map)
+plt.colorbar()
+plt.show()
+plt.close()
 
 
 
