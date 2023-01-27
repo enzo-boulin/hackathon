@@ -1,4 +1,5 @@
 from random import randint, choice
+import numpy as np
 
 
 class Room:
@@ -82,16 +83,16 @@ def get_neighbors(map, cell):
     x, y = cell
     neighbors = []
     # Check if the cell above is a valid move
-    if x > 0 and map[x-1][y] != 0:
+    if x > 0 and (map[x-1][y] == 0 or map[x-1][y] == 2):
         neighbors.append((x-1, y))
     # Check if the cell to the right is a valid move
-    if y < len(map[0])-1 and map[x][y+1] != 0:
+    if y < len(map[0])-1 and (map[x][y+1] == 0 or map[x][y+1] == 2):
         neighbors.append((x, y+1))
     # Check if the cell below is a valid move
-    if x < len(map)-1 and map[x+1][y] != 0:
+    if x < len(map)-1 and (map[x+1][y] == 0 or map[x+1][y] == 2):
         neighbors.append((x+1, y))
     # Check if the cell to the left is a valid move
-    if y > 0 and map[x][y-1] != 0:
+    if y > 0 and (map[x][y-1] == 0 or map[x][y-1] == 2):
         neighbors.append((x, y-1))
     return neighbors
 
@@ -125,7 +126,7 @@ def starting_path_position(room):
         return door_coordonate, starting_pos, wall_index
 
 def create_paths(room_1, room_2, map):
-
+    """génère le chemin le plus court sur 100 essaies entre room_1 et room_2"""
     #Création d'une liste de chemins possibles sur 100 essaies de couple de portes différent
     path_list = []
     for _ in range(100):
