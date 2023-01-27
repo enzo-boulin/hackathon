@@ -28,6 +28,23 @@ class Game :
                     heros.direction = [-1,0]
                 elif event.key == pg.K_p:
                     heros.boire(heros.potion) 
+                elif event.key == pg.K_SPACE and ennemis_alentours:
+                    ilsepasseqqchose()
+
+                
+    def dessin_bonhomme() : 
+        
+
+
+
+
+
+
+
+
+
+                
+
 
 
 #classe       
@@ -46,6 +63,7 @@ def ennemis_alentours(heros, ennemi):
         return True
     else : 
         return False
+   
 
 def ennemi_suit_joueur(heros,ennemi):
     pos_joueur = heros.position
@@ -66,6 +84,10 @@ def main():
     pg.init()
 
     pg.display.set_caption("Rogue")
+
+    if ennemis_alentours() : 
+        print('Le combat commence')
+        combat(heros, monstre)
 
     done = False
     while not done:
