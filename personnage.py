@@ -1,4 +1,3 @@
-import pygame as pg
 import random as rd
 
 
@@ -25,17 +24,11 @@ class Heros(Personnage):
         vitesse,
         position,
         argent,
-        armes,
         potions,
-        faim,
-        soif,
     ):
         super().__init__(self, PV, force, defense, esquive, vitesse, position)
         self.argent = argent
-        self.armes = armes
         self.potions = potions
-        self.faim = faim
-        self.soif = soif
 
     def boire(self, potion):
         attribut = potion.attribut
@@ -62,7 +55,7 @@ class Monstre(Personnage):
 
 
 def esquive(personnage):
-    alea = rd.random
+    alea = rd.random()
     if alea < personnage.esquive:
         return True
     return False
@@ -78,6 +71,8 @@ def combat(heros, monstre):
         if not (esquive(monstre)):
             attaque(heros, monstre)
             if monstre.PV <= 0:
+                heros.PV += 5
+                heros.force += 1
                 return "Monstre battu"
             attaque(monstre, heros)
             if heros.PV <= 0:
@@ -89,4 +84,6 @@ def combat(heros, monstre):
                 return "Game over"
             attaque(heros, monstre)
             if heros.PV <= 0:
+                heros.PV += 5
+                heros.force += 1
                 return "Monstre battu"
