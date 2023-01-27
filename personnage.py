@@ -11,8 +11,10 @@ class Personnage:
         self.position = position
         self.direction = direction
 
-    def mouvement(self):
-        self.position += self.direction
+    def mouvement(self, map):
+        case = self.position + self.direction
+        if map[case[0]][case[1]] != 1:
+            self.position += self.direction
 
 
 class Heros(Personnage):
